@@ -31,6 +31,6 @@ public class NewPID {
             decreaseSpeed = pastPoint/timeremaining;
         } else decreaseSpeed = 0;
         timeremaining -= timeIncrement;
-        return Math.min(1, Math.max(-1, (error * Kp) + Ki*I + (decreaseSpeed*Kd)));
+        return Math.min(1, Math.max(-1, ((error * Kp) + Ki*I) - (decreaseSpeed*Kd)));
     }
 }

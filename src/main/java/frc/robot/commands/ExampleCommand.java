@@ -28,14 +28,15 @@ public class ExampleCommand extends Command {
     @Override
     public void initialize() {
       super.initialize();
-        newPID = new NewPID(.005, 1, 0.1, 1, exampleSubsystem.getMotorSpeed());
+        newPID = new NewPID(.000, .05, 0, .2, exampleSubsystem.getMotorSpeed());
     }
 
     @Override
     public void execute() {
         truespeed = exampleSubsystem.getMotorSpeed();
         System.out.println("Joystick value" + speed.get());
-        wantedspeed = Math.abs(speed.get()) > .1 ? speed.get()*-200 : 0;
+        //wantedspeed = Math.abs(speed.get()) > .1 ? speed.get()*-200 : 0;
+        wantedspeed = 48;
         motorSpeed = newPID.calculatePID(wantedspeed, truespeed);
         System.out.println("Desired motor speed" + motorSpeed);
         System.out.println("wanted speed" + wantedspeed);

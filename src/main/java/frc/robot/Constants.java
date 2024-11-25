@@ -17,6 +17,6 @@ public final class Constants {
     public static final int kXboxControllerPort = 0;
   }
   public static class PushMotor {
-    public static final int kPushMotorId = 44;
+    public static final int kPushMotorId = 42;
   }
 }
