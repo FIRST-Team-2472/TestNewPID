@@ -28,7 +28,7 @@ public class ExampleCommand extends Command {
     @Override
     public void initialize() {
       super.initialize();
-        newPID = new NewPID(.005, 1, 0.1, .2);
+        newPID = new NewPID(.005, 1, 0.1, 1, exampleSubsystem.getMotorSpeed());
     }
 
     @Override

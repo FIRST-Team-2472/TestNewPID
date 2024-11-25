@@ -4,13 +4,15 @@ package frc.robot;
 
 public class NewPID {
     
-    private double Kp, Ki,I, Kd, error, lasterror, timeIncrement, time;
+    private double Kp, Ki,I, Kd, error, lasterror, timeIncrement, time, timeremaining, lastSensorRead, decreaseSpeed, pastPoint;
 
-    public NewPID(double Kp, double Ki, double Kd, double time){
+    public NewPID(double Kp, double Ki, double Kd, double time, double lastSensorRead){
     this.Kd = Kd;
     this.Ki = Ki;
     this.Kp = Kp;
     this.time = time;
+    this.lastSensorRead = lastSensorRead;
+    timeremaining = time*50;
     I = 0;
     error = 0;
     timeIncrement = 1/time/50; // 50 = 1/code refresh rate (per second)
@@ -24,6 +26,11 @@ public class NewPID {
             else 
             I += timeIncrement;
         };
-        return Math.min(1, Math.max(-1, (error * Kp) + Ki*I + ((error - lasterror)*Kd)));
+        if (Math.abs((sensorRead - lastSensorRead)*timeremaining) > Math.abs(setpoint)){
+            pastPoint = setpoint - ((sensorRead - lastSensorRead)*timeremaining);
+            decreaseSpeed = pastPoint/timeremaining;
+        } else decreaseSpeed = 0;
+        timeremaining -= timeIncrement;
+        return Math.min(1, Math.max(-1, (error * Kp) + Ki*I + (decreaseSpeed*Kd)));
     }
 }
