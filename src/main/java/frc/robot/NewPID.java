@@ -4,13 +4,14 @@ package frc.robot;
 
 public class NewPID {
     
-    private double Kp, Ki,I, Kd, error, lasterror, timeIncrement, time, timeremaining, lastSensorRead, decreaseSpeed, pastPoint;
+    private double Kp, Ki,I, Kd, error, lasterror, timeIncrement, time, Dtime, timeremaining, lastSensorRead, decreaseSpeed,   predictionPoint, speedNeeded;
 
-    public NewPID(double Kp, double Ki, double Kd, double time, double lastSensorRead){
+    public NewPID(double Kp, double Ki, double Kd, double time, double Dtime, double lastSensorRead){
     this.Kd = Kd;
     this.Ki = Ki;
     this.Kp = Kp;
     this.time = time;
+    this.Dtime = Dtime;
     this.lastSensorRead = lastSensorRead;
     timeremaining = time*50;
     I = 0;
@@ -26,11 +27,13 @@ public class NewPID {
             else 
             I += timeIncrement;
         };
-        if (Math.abs((sensorRead - lastSensorRead)*timeremaining) > Math.abs(setpoint)){
-            pastPoint = setpoint - ((sensorRead - lastSensorRead)*timeremaining);
-            decreaseSpeed = pastPoint/timeremaining;
-        } else decreaseSpeed = 0;
+        if (Math.abs((sensorRead - lastSensorRead)*Dtime) > Math.abs(setpoint)){
+            predictionPoint = setpoint - ((sensorRead - lastSensorRead)*Dtime);
+        } else predictionPoint = 0;
         timeremaining -= timeIncrement;
-        return Math.min(1, Math.max(-1, ((error * Kp) + Ki*I) - (decreaseSpeed*Kd)));
+        speedNeeded = Math.min(1, Math.max(-1, ((error * Kp) + Ki*I) + (predictionPoint*Kd)));
+        //if (speedNeeded < .017 && speedNeeded > 0) speedNeeded =.017;
+        //if (speedNeeded > -.017 && speedNeeded < 0) speedNeeded = -.017;
+        return speedNeeded;
     }
 }

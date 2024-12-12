@@ -21,14 +21,14 @@ public class ExampleCommand extends Command {
         
         this.exampleSubsystem = exampleSubsystem;
         this.speed = speed;
-
+        motorSpeed = 0;
         addRequirements(exampleSubsystem);
     }
 
     @Override
     public void initialize() {
-      super.initialize();
-        newPID = new NewPID(.000, .05, 0, .2, exampleSubsystem.getMotorSpeed());
+      super.initialize(); // KI = .02 & TIME = .2
+        newPID = new NewPID(.00001, .02, 0.001, 60, 0.01, exampleSubsystem.getMotorSpeed());
     }
 
     @Override
@@ -37,7 +37,7 @@ public class ExampleCommand extends Command {
         System.out.println("Joystick value" + speed.get());
         //wantedspeed = Math.abs(speed.get()) > .1 ? speed.get()*-200 : 0;
         wantedspeed = 48;
-        motorSpeed = newPID.calculatePID(wantedspeed, truespeed);
+        motorSpeed += (newPID.calculatePID(wantedspeed, truespeed)*.1);
         System.out.println("Desired motor speed" + motorSpeed);
         System.out.println("wanted speed" + wantedspeed);
         exampleSubsystem.runPushMotor(motorSpeed);
