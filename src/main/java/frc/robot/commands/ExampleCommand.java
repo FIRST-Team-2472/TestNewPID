@@ -3,6 +3,7 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.*;
 import frc.robot.NewPID;
@@ -10,6 +11,7 @@ import frc.robot.NewPID;
 public class ExampleCommand extends Command { 
 
     private NewPID newPID;
+    private PIDController pidController = new PIDController(.0000, .0001, .000);
     private ExampleSubsystem exampleSubsystem;
     private double motorSpeed, truespeed, wantedspeed;
     private Supplier<Double> speed;
@@ -34,12 +36,13 @@ public class ExampleCommand extends Command {
     @Override
     public void execute() {
         truespeed = exampleSubsystem.getMotorSpeed();
-        System.out.println("Joystick value" + speed.get());
+        motorSpeed = pidController.calculate(truespeed, 48);
+        /*System.out.println("Joystick value" + speed.get());
         //wantedspeed = Math.abs(speed.get()) > .1 ? speed.get()*-200 : 0;
         wantedspeed = 48;
         motorSpeed += (newPID.calculatePID(wantedspeed, truespeed)*.1);
         System.out.println("Desired motor speed" + motorSpeed);
-        System.out.println("wanted speed" + wantedspeed);
+        System.out.println("wanted speed" + wantedspeed); */
         exampleSubsystem.runPushMotor(motorSpeed);
         super.execute();
         }
